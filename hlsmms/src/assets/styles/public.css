@@ -1,0 +1,171 @@
+/* 公共样式 */
+body{
+  font-size: 14px;
+}
+
+html,body,#app,#home,#loginbox{
+  height: 100%;
+  margin: 0;
+}
+
+a{
+  color: #fff;
+  text-decoration: none;
+}
+
+.el-aside{
+  min-height: 100%;
+}
+
+
+/* 去除label标签的内边距 */
+.el-form--label-top .el-form-item__label{
+  padding: 0px;
+}
+
+
+
+/* 修改表单元素的默认宽度100% */
+#rightContent .el-input{
+  width: 25%;
+}
+
+/* 把下拉列表恢复为100% */
+#rightContent .el-input--suffix{
+ width: 80%;
+}
+
+/* 备注提示样式 */
+.remark{
+  margin: 0px;
+  font-size: 12px;
+  color:rgb(149, 148, 148);
+  line-height: 20px;
+}
+
+/* -------------------------左侧菜单栏样式 -----------------------------*/
+/* 菜单栏头部样式 */
+#leftTitle{
+  margin-bottom: 24px;
+}
+#leftTitle h1,#leftTitle p{
+  color:rgb(211, 208, 208);
+  text-align: right;
+  margin-right: 20px;
+  font-size: 14px;
+}
+#leftTitle h1{
+  margin-top: 40px;
+  font-size: 24px;
+  margin-bottom: 40px;
+}
+#leftTitle a{
+  color:rgb(211, 208, 208);
+  text-decoration: none;
+}
+
+
+/* 菜单栏样式 */
+.el-aside {
+  color: #333;
+  background: url("../images/sidebg.png") repeat-y;
+}
+
+/* 一级菜单样式 */
+.el-menu{
+  background-color: transparent;
+  width: 206px;
+  margin-left: 24px;
+  border:none;
+}
+.el-submenu__title{
+  height: 33px;
+  line-height: 33px;
+  background: url("../images/menubg.png") repeat-x;
+  border-radius: 4px 0 0 4px;
+  margin-bottom: 10px;
+  text-align: right;
+  color:rgb(252, 252, 252);
+}
+/* 去除箭头样式 */
+.el-submenu__icon-arrow{
+  display: none;
+}
+
+/* 二级菜单样式 */
+.el-menu--inline{margin-left: 0px;}
+
+.el-menu-item-group__title{padding: 0px;}
+
+.el-submenu .el-menu-item{
+  height: 30px;
+  line-height: 30px;
+  padding: 0px 20px;
+  margin-bottom: 10px;
+  border-radius: 4px 0 0 4px;
+  text-align: right;
+  color: #ccc;
+}
+
+/*  */
+
+
+/* 鼠标经过和焦点样式 */
+.el-menu-item:hover, .el-menu-item:focus{
+  background-color: #ccc;
+ 
+  font-weight: bold;
+}
+.el-menu-item:hover a{
+  color: black ;
+}
+/* 激活的样式 */
+.el-menu-item.is-active{
+  color: rgb(62, 60, 60);
+  font-weight: bold;
+  background-color: #ccc;
+}
+.el-menu-item.is-active a{
+  color: black ;
+}
+/* --------------------------------右侧----------------------------------------------- */
+/* 右侧头部和尾部公共样式 */
+.el-header, .el-footer {
+    background-color: #f2f2f2;
+    color: #333;
+  }
+   /* 右侧头部样式 */
+  .el-header h1{
+    padding-top: 40px;
+    margin: 0px;
+    font-size:24px;
+  }
+  .el-header p{
+   margin-bottom: 0px;
+  }
+  /* 右侧尾部样式 */
+  .el-footer p{
+    line-height:50px;
+    margin: 0px;
+    border-top:1px solid #ccc;
+  }
+  
+  /* 右侧中间样式 */
+  .el-main{
+    background-color: #f2f2f2;
+    height:560px;
+  }
+  .el-main h3{
+    margin: 0px;
+  }
+  .el-card__header{
+    background:linear-gradient(#fff,#ccc);
+    padding: 10px 20px;
+  }
+/* 提示框样式 */
+  .el-alert{
+    margin-bottom: 10px;
+  }
+
+
+
