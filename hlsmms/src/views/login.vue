@@ -30,16 +30,16 @@
   <script>
     export default {
           data() {
-        
           return {
             ruleForm2: {
               pass: '',
               username: '',
+              path:'login'
             },
             rules2: {
               username: [
                 { required: true, trigger: 'blur', message: "用户名必须填写" },
-                { min: 6, max: 18, message: '用户名长度在 6 到 18 个字符', trigger: 'blur' }
+                { min: 3, max: 18, message: '用户名长度在 3 到 18 个字符', trigger: 'blur' }
                 ],
               pass: [
                   { required: true, trigger: 'blur', message: "密码必须填写" },
@@ -54,12 +54,30 @@
             this.$refs[formName].validate((valid) => {
               if (valid) {
                 //发送ajax向后台请求数据验证
-                
-                //跳转到管理界面首页
-                this.$router.push("/home")
-                
-              } else {
-                console.log('error submit!!');
+              this.axios.post(
+                "http://127.0.0.1:9090/users/login",
+                this.qs.stringify(this.ruleForm2),
+                {emulateJSON:true,withCredentials:true}
+              )
+              .then((result)=>{
+                if(result.data=="000000"){
+                  //跳转到管理界面首页并将用户名传入home页面
+                  this.$router.push("/home?username="+this.ruleForm2.username)
+                }else{
+                  this.$message({
+                  type: 'error',
+                  message: `登录失败`
+                  });
+                }
+              })
+              .catch((err)=>{
+                console.log(err)
+                this.$message({
+                  type: 'error',
+                  message: '系统错误'
+                });
+              })
+            } else {
                 this.$message({
                   type: 'info',
                   message: `登录失败`
@@ -71,7 +89,25 @@
           resetForm(formName) {
             this.$refs[formName].resetFields();
           }
-        }
+        },
+        created() {
+          // 进入登陆页面清除cookie
+          this.axios.post(
+                "http://127.0.0.1:9090/users/delcookie",
+                JSON.stringify({path:"delcookie"}),
+                {emulateJSON:true,withCredentials:true}
+              )
+              .then((result)=>{
+                
+              })
+              .catch((err)=>{
+                console.log(err)
+                this.$message({
+                  type: 'error',
+                  message: '系统错误'
+                });
+              })
+        },
     };
   </script>
 

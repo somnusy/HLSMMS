@@ -11,10 +11,10 @@
           <el-main>
              <el-card class="box-card">
                  <div slot="header" class="clearfix">
-                <h3>模板</h3>
+                <h3>添加会员</h3>
               </div>
               <div class="text item">
-                模板
+                添加会员添加会员添加会员添加会员添加会员
               </div>
            </el-card>
           </el-main>

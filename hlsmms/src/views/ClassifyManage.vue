@@ -1,12 +1,12 @@
 <template>
   <el-container id="home">
     <!-- 左边菜单栏 -->
-    <Leftmenu></Leftmenu>
+    <Leftmenu :username="username"></Leftmenu>
 
     <!-- 右边部分 -->
     <el-container id="rightContent">
       <!-- 右边头部 -->
-      <Rignttop></Rignttop>
+      <Rignttop :username="username" itemname="分类管理"></Rignttop>
       <!-- 右边中心内容 -->
       <el-main>
         <el-card class="box-card">
@@ -18,7 +18,7 @@
             :row-class-name="tableRowClassName">
               <el-table-column label="分类名称" width="600">
                 <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.daliyuse }}</span>
+                  <span style="margin-left: 10px">{{ scope.row.name }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="管理">
@@ -33,6 +33,26 @@
       <!-- 右边底部 -->
       <Rightbottom></Rightbottom>
     </el-container>
+
+
+    <!-- 点击编辑弹出 -->
+    <el-dialog title="修改分类管理" :visible.sync="centerDialogVisible" width="30%" center>
+
+      <el-form :model="ruleForm2" status-icon ref="ruleForm2" label-width="100px" class="demo-ruleForm" label-position="top">
+        <el-form-item label="分类名 :" prop="name">
+          <el-input type="text" v-model="ruleForm2.name" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="状态 :" prop="status">
+          <el-radio v-model="ruleForm2.status" label="1">启用</el-radio>
+          <el-radio v-model="ruleForm2.status" label="0">备用</el-radio>
+        </el-form-item>
+        </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm2')">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-container>
 </template>
 
@@ -44,50 +64,41 @@ import Rightbottom from "../components/rightBottom.vue";
 
 export default {
  data() {
+      
       return {
+        centerDialogVisible:false,
+      //数据对象
+          ruleForm2: {
+            id:"",
+            name:"",
+            status:""
+          },
+
         tableShowData:[
-          {daliyuse: '一、零食',type:"1s" },
-          {daliyuse: '二、衣服',type:"yf" },
-          {daliyuse: '三、汽车',type:"qc" }
         ],
-        tableData: [
-          {daliyuse: '一、零食',type:"1s" },
-          {daliyuse: '辣条',type:"1s1" },
-          {daliyuse: '饼干',type:"1s2" },
-          {daliyuse: '可乐',type:"1s3" },
 
-          {daliyuse: '二、衣服',type:"yf" },
-          {daliyuse: 'adidas',type:"yf1" },
-          {daliyuse: 'nike',type:"yf2" },
-          {daliyuse: 'nb',type:"yf3" },
-
-
-          {daliyuse: '三、汽车',type:"qc" },
-          {daliyuse: '劳斯莱斯',type:"qc1" },
-          {daliyuse: '马萨拉蒂',type:"qc2" },
-          {daliyuse: '布加迪威龙',type:"qc3" },
-        ],
-        click1:true,
-        click2:true,
-        click3:true,
+        tableData: [],
+     
       }
     },
     methods: {
+    //点击编辑显示弹出层并把当前行的数据赋回填到弹出层
       handleEdit(index, row) {
-        // console.log(index, row);
+        this.ruleForm2 = row;
+        this.centerDialogVisible = true;
       },
+     //点击当前行显示当前行的二级数据
       rowClick(row){
         if(row.type.length!=2){
           return;
         }
-        let v = this;
         let arr = [];
-        v.tableData.forEach(element => {
+        this.tableData.forEach(element => {
           if(element.type.indexOf(row.type)>-1||(element.type.length==2&&element.type!=row.type)){
             arr.push(element);
           }
         });
-        v.tableShowData = arr;
+        this.tableShowData = arr;
       },
       tableRowClassName({row, rowIndex}) {
         if (row.type.length == 2) {
@@ -95,6 +106,37 @@ export default {
         }else{
           return 'success-row';
         }
+      },
+      submitForm(formname){
+        //调用组件的验证方法提交表单时验证
+      this.$refs[formname].validate(valid => {
+        //valid参数表示验证的结果，true表示验证通过，false验证失败
+        if (valid) {
+          this.axios
+            .post(
+              "http://127.0.0.1:9090/users/updateClassify",
+              this.qs.stringify(this.ruleForm2),
+              {emulateJSON:true,withCredentials:true}
+            )
+            .then(result => {
+              if (result.data.isOk) {
+                this.$message({
+                  showClose: true,
+                  message: result.data.msg,
+                  type: "success"
+                });
+              } else {
+                this.$message.error(result.data.msg);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+            this.centerDialogVisible = false;
+        } else {
+          return false;
+        }
+      });
       }
   
     },
@@ -103,6 +145,48 @@ export default {
     Leftmenu,
     Rignttop,
     Rightbottom
+  },
+    created(){
+    //获取用户登录时输入的用户名
+    this.username = this.$route.query.username;
+      //将获取到的用户名渲染给当前页面
+    this.ruleForm2.username = this.username;
+
+    this.axios
+      .post(
+        "http://127.0.0.1:9090/users/initClassify",
+        this.qs.stringify(this.ruleForm2),
+        {emulateJSON:true,withCredentials:true}
+      )
+      .then(result => {
+        if (result.data.isOk) {
+       //将初始化的一级数据渲染到页面
+          this.tableShowData = result.data.data;
+        } else {
+          this.$message.error(result.data.msg);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+      this.axios
+      .post(
+        "http://127.0.0.1:9090/users/initAllClassify",
+        this.qs.stringify(this.ruleForm2),
+        {emulateJSON:true,withCredentials:true}
+      )
+      .then(result => {
+        if (result.data.isOk) {
+     //将数据赋值到列表
+          this.tableData = result.data.data;
+        } else {
+          this.$message.error(result.data.msg);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 </script>

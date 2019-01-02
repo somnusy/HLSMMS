@@ -37,5 +37,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+ app.listen(9090,()=>{
+  console.log("后台服务地址是：http://127.0.0.1:9090/")
+ })  
 
 module.exports = app;

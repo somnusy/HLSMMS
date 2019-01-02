@@ -1,12 +1,12 @@
 <template>
   <el-container id="home">
     <!-- 左边菜单栏 -->
-    <Leftmenu></Leftmenu>
+    <Leftmenu :username="username"></Leftmenu>
 
     <!-- 右边部分 -->
     <el-container id="rightContent">
       <!-- 右边头部 -->
-      <Rignttop></Rignttop>
+      <Rignttop :username="username" itemname="查看和管理所有分类"></Rignttop>
       <!-- 右边中心内容 -->
       <el-main>
         <el-card class="box-card">
@@ -17,8 +17,9 @@
             <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" label-position="top">
               <el-form-item label="所属分类 :" prop="addclassify">
                 <el-select v-model="ruleForm2.addclassify" placeholder="请选择">
-                  <el-option label="日用品" value="日用品"></el-option>
-                  <el-option label="食品" value="食品"></el-option>
+                  <el-option label="零食" value="ls"></el-option>
+                  <el-option label="衣服" value="yf"></el-option>
+                  <el-option label="汽车" value="qc"></el-option>
                 </el-select>
               </el-form-item>
               <!-- 分类名称 -->
@@ -28,10 +29,10 @@
             </el-form>
             <!-- 启用 禁用 -->
               <p>状态 :</p>
-              <el-radio v-model="radio" label="1">启用</el-radio>
-              <el-radio v-model="radio" label="2">备用</el-radio>
+              <el-radio v-model="ruleForm2.status" label="1">启用</el-radio>
+              <el-radio v-model="ruleForm2.status" label="0">备用</el-radio>
              <el-row class='add'>
-              <el-button type="success">添加</el-button>
+              <el-button type="success" @click="add('ruleForm2')">添加</el-button>
             </el-row>
           </div>
         </el-card>
@@ -54,27 +55,63 @@ export default {
         radio: '1',
       ruleForm2: {
         addclassify: "",
-        classifyname: ""
+        classifyname: "",
+        status:""
       },
       rules2: {
         classifyname: [
           //required: true 必填     trigger: 'blur' 失去焦点的事件触发     message: "出错信息"
           { required: true, trigger: "blur", message: "用户名必须填写" },
           //min: 6 最小长度   max: 18 最大长度
-          {min: 6,max: 18,message: "用户名长度在 6 到 18 个字符",trigger: "blur" }
+          {min: 2,max: 18,message: "用户名长度在 2 到 18 个字符",trigger: "blur" }
         ], 
         addclassify: [
           { required: true, trigger: "change", message: "请选择分类" }
         ]    
       }      
     };        
-  },       
+  },
+  methods:{
+    add(formName){
+      //调用组件的验证方法提交表单时验证
+      this.$refs[formName].validate(valid => {
+        //valid参数表示验证的结果，true表示验证通过，false验证失败
+        if (valid) {
+          this.axios
+            .post(
+              "http://127.0.0.1:9090/users/addClassify",
+              this.qs.stringify(this.ruleForm2),
+              {emulateJSON:true,withCredentials:true}
+            )
+            .then(result => {
+              if (result.data.isOk) {
+                this.$message({
+                  showClose: true,
+                  message: result.data.msg,
+                  type: "success"
+                });
+              } else {
+                this.$message.error(result.data.msg);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        } else {
+          return false;
+        }
+      });
+    }
+  },      
   components: {
     //定义左侧菜单组件
     Leftmenu,
     Rignttop,
     Rightbottom
-  }      
+  },
+  created(){
+    this.username = this.$route.query.username;
+  }   
  };     
 </script>      
 

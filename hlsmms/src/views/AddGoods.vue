@@ -1,12 +1,15 @@
 <template>
   <el-container id="home">
     <!-- 左边菜单栏 -->
-    <Leftmenu></Leftmenu>
+    <Leftmenu :username="username"></Leftmenu>
 
     <!-- 右边部分 -->
     <el-container id="rightContent">
       <!-- 右边头部 -->
-      <Rignttop></Rignttop>
+      <Rignttop :username="username" itemname="1、你可以在这里添加新的商品或者编辑已有的商品。
+                 2、新添加商品时可以同时进行入库（入库必须有数量和进价）！
+                  3、带*号的项目必填"></Rignttop>
+
       <!-- 右边中心内容 -->
       <el-main>
         <el-card class="box-card">
@@ -14,10 +17,10 @@
             <h3>添加商品</h3>
           </div>
           <div class="text item">
-            <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" label-position="top">
+            <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" label-position="left" size="small">
               <!-- 所属分类 -->
-              <el-form-item label="所属分类 :" prop="addclassify" label-width="30px">
-                <el-select v-model="ruleForm2.addclassify" placeholder="请选择">
+              <el-form-item label="所属分类 :" prop="classname" label-width="100px">
+                <el-select v-model="ruleForm2.classname" placeholder="请选择">
                   <el-option label="日用品" value="日用品"></el-option>
                   <el-option label="食品" value="食品"></el-option>
                 </el-select>
@@ -31,49 +34,59 @@
               <el-form-item label="商品名称 :" prop="goodsname">
                 <el-input type="text" v-model="ruleForm2.goodsname" autocomplete="off"></el-input>
               </el-form-item>
+              <!-- 商品进价 -->
+              <el-form-item label="商品进价" prop="costprice">
+                <el-input v-model.number="ruleForm2.costprice" @blur="calcJG"></el-input>
+              </el-form-item>
               <!-- 商品售价 -->
-              <el-form-item label="商品售价 :" prop="goodsprice">
-                <el-input v-model.number="ruleForm2.goodsprice" @blur="calcJG"></el-input>
+              <el-form-item label="商品售价 :" prop="saleprice">
+                <el-input v-model.number="ruleForm2.saleprice"></el-input>
               </el-form-item>
               <!-- 市场价 -->
-              <el-form-item label="市场价" prop="marketprice">
+              <el-form-item label="市场价 :" prop="marketprice">
                 <el-input v-model.number="ruleForm2.marketprice"></el-input>
-                <p class="remark">默认市场价为售价的1.2倍</p>
+                <p class="remark">默认市场价为商品售价的1.2倍</p>
               </el-form-item>
-              <!-- 商品进价 -->
-              <el-form-item label="商品进价" prop="oldprice">
-                <el-input v-model.number="ruleForm2.oldprice"></el-input>
-              </el-form-item>
+
               <!-- 入库数量 -->
-              <el-form-item label="入库数量" prop="enternum">
-                <el-input v-model.number="ruleForm2.enternum"></el-input>
+              <el-form-item label="入库数量" prop="stocknum">
+                <el-input v-model.number="ruleForm2.stocknum"></el-input>
               </el-form-item>
               <!-- 商品重量 -->
               <el-form-item label="商品重量" prop="weight">
-                <el-input v-model.number="ruleForm2.enternum"></el-input>
+                <el-input v-model.number="ruleForm2.weight"></el-input>
                 <p class="remark">计重商品单位为kg</p>
               </el-form-item>
               <!-- 商品单位 -->
-              <el-form-item label="商品单位" prop="goodsunit">
-                <el-input v-model.number="ruleForm2.enternum"></el-input>
+              <el-form-item label="商品单位" prop="unit">
+                <el-input v-model.number="ruleForm2.unit"></el-input>
               </el-form-item>
               <!-- 会员优惠 -->
-              <p>会员优惠：</p>
-              <el-radio v-model="radio1" label="1">享受</el-radio>
-              <el-radio v-model="radio1" label="2">不享受</el-radio>
+              <el-form-item label="会员优惠：">
+                <el-radio-group v-model="ruleForm2.isdiscount">
+                  <el-radio label="1">享受</el-radio>
+                  <el-radio label="0">不享受</el-radio>
+                </el-radio-group>
+              </el-form-item>
               <!-- 是否促销 -->
-              <p>是否促销：</p>
-              <el-radio v-model="radio2" label="1">启用</el-radio>
-              <el-radio v-model="radio2" label="2">备用</el-radio>
+              <el-form-item label="是否促销：">
+                <el-radio-group v-model="ruleForm2.ispromotion">
+                  <el-radio label="1">启用</el-radio>
+                  <el-radio label="0">禁用</el-radio>
+                </el-radio-group>
+              </el-form-item>
               <!-- 商品简介 -->
-              <el-form-item label="商品简介：" prop="desc">
-                <el-input type="textarea" v-model="ruleForm2.desc"></el-input>
+              
+              <el-form-item label="商品简介：" prop="details">
+                <el-input type="textarea" v-model="ruleForm2.details"></el-input>
                 <p class="remark">不超过200个汉字</p>
               </el-form-item>
               <!-- 添加按钮 -->
-              <el-row class='add'>
-                <el-button type="success">添加</el-button>
-              </el-row>
+            
+                 <el-form-item class='add'>
+                <el-button type="primary" @click="submitForm('ruleForm2')">添加商品</el-button>
+              </el-form-item>
+           
             </el-form>
 
           </div>
@@ -94,35 +107,34 @@ import Rightbottom from "../components/rightBottom.vue";
 export default {
   data() {
     return {
-      radio1: "1",
-      radio2: "1",
+      // radio1: "1",
+      // radio2: "1",
 
       ruleForm2: {
-        addclassify: "",
-        classifyname: "",
+        classname: "",
+        //  classifyname: "",
         barcode: "",
         goodsname: "",
-        goodsprice: "",
+        saleprice: "",
         marketprice: "",
-        oldprice: "",
-        enternum: "",
-        desc: ""
+        costprice: "",
+        stocknum: "",
+        unit: "",
+        details: "",
+        isdiscount: "1",
+        ispromotion: "1",
+        username: ""
       },
       rules2: {
-        addclassify: [
-          { required: true, trigger: "blur", message: "请选择分类" }
-        ],
+        classname: [{ required: true, trigger: "blur", message: "请选择分类" }],
         barcode: [
           { required: true, trigger: "blur", message: "请点击生成条形码" }
         ],
         goodsname: [
           { required: true, trigger: "blur", message: "请输入商品名称" }
         ],
-        goodsprice: [
-          { required: true, trigger: "blur", message: "请输入商品价格" }
-        ],
-        oldprice: [{ required: true, trigger: "blur", message: "请输入进价" }],
-        enternum: [
+        costprice: [{ required: true, trigger: "blur", message: "请输入进价" }],
+        stocknum: [
           { required: true, trigger: "blur", message: "请输入入库数量" }
         ]
       }
@@ -134,52 +146,76 @@ export default {
     Rignttop,
     Rightbottom
   },
-  
+
   methods: {
-    //定义方法  市场价是商品售价的1.2倍
+//提交表单的方法
+    submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+           //发送ajax请求保存商品数据
+           this.axios.get(
+             'http://127.0.0.1:9090/users/addgoods',
+             this.qs.stringify(this.ruleForm2),
+              //允许携带cookie
+              {emulateJSON:true,withCredentials:true}
+           ).then(result)
+          } else {
+            return false;
+          }
+        });
+      },
+    //定义方法  市场价是商品售价的1.2倍 售价是进价的5倍
     calcJG() {
       let v = this;
-      v.ruleForm2.marketprice = (1.2 * v.ruleForm2.goodsprice).toFixed(2);
+      v.ruleForm2.saleprice = (v.ruleForm2.costprice * 5).toFixed(2);
+      v.ruleForm2.marketprice = (1.2 * v.ruleForm2.saleprice).toFixed(2);
     },
-     //定义条形码方法
-       onSubmit() {
-        //console.log('submit!');
-      }
-  }
+    //定义条形码方法
+    onSubmit() {
+      this.ruleForm2.barcode = new Date().getTime();
+    }
+
+  },
+  created() {
+    this.username = this.$route.query.username;
+  },
+
 };
 </script>
+
+
+
 <style>
-
-
-
-.add .el-button{
+.add .el-button {
   margin: 30px 0px;
 }
 /* 单选按钮颜色 */
-.el-radio__input.is-checked .el-radio__inner{
-  color:#67c23a;
+.el-radio__input.is-checked .el-radio__inner {
+  color: #67c23a;
   background-color: #67c23a;
-  border: #67c23a
+  border: #67c23a;
 }
 
-.el-radio__input.is-checked + .el-radio__label{
- color: #67c23a;
- border: #67c23a
- }
+.el-radio__input.is-checked + .el-radio__label {
+  color: #67c23a;
+  border: #67c23a;
+}
 
- /* 条形码按钮颜色调整 */
-.el-button--primary{
+/* 条形码按钮颜色调整 */
+.el-button--primary {
   background-color: #67c23a;
-  border:#67c23a;
+  border: #67c23a;
   margin-left: 10px;
 }
-.el-button:hover, .el-button:focus{
-    background-color: #67c23a;
-  border:#67c23a;
+.el-button:hover,
+.el-button:focus {
+  background-color: #67c23a;
+  border: #67c23a;
 }
- /* 文本域长度调整 */
-.el-textarea__inner{
-  width: 50%;
+/* 文本域长度调整 */
+.el-textarea__inner {
+  margin-top: 20px;
+  width: 70%;
 }
 </style>
 

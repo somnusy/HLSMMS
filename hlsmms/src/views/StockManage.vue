@@ -11,10 +11,10 @@
           <el-main>
              <el-card class="box-card">
                  <div slot="header" class="clearfix">
-                <h3>模板</h3>
+                <h3>库存管理</h3>
               </div>
               <div class="text item">
-                模板
+                库存管理库存管理库存管理库存管理库存管理
               </div>
            </el-card>
           </el-main>

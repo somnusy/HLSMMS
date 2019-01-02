@@ -1,12 +1,12 @@
 <template>
   <el-container id="home">
     <!-- 左边菜单栏 -->
-    <Leftmenu></Leftmenu>
+    <Leftmenu :username="username"></Leftmenu>
 
     <!-- 右边部分 -->
     <el-container id="rightContent">
       <!-- 右边头部 -->
-      <Rignttop></Rignttop>
+      <Rignttop :username="username" itemname="查看和管理商品库存"></Rignttop>
       <!-- 右边中心内容 -->
       <el-main>
         <el-card class="box-card">
@@ -54,9 +54,11 @@ export default {
     return {
       
       ruleForm2: {
+        
         barcode: "",
         enternum: "",
         oldprice: "",
+        username:""
      
       },
 
@@ -72,7 +74,13 @@ export default {
     Leftmenu,
     Rignttop,
     Rightbottom
+  },
+      created(){
+    //获取用户登录时输入的用户名
+    this.username = this.$route.query.username;
+   
   }
+
 };
 </script>
 

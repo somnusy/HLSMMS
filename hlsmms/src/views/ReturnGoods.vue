@@ -6,7 +6,7 @@
       <!-- 右边部分 -->
       <el-container id="rightContent">
         <!-- 右边头部 -->
-         <Rignttop></Rignttop>
+         <Rignttop :username="username" itemname="商品退货!!!!"></Rignttop>
         <!-- 右边中心内容 -->
           <el-main>
              <el-card class="box-card">
@@ -40,6 +40,7 @@ export default {
     return {
        ruleForm2: {
         barcode: "",
+        username:""
       },
       rules2: {
         barcode: [ { required: true, trigger: "blur", message: "请输入订单号" }],
@@ -58,6 +59,11 @@ export default {
        onSubmit() {
         //console.log('submit!');
       }
+  },
+   created(){
+    //获取用户登录时输入的用户名
+    this.username = this.$route.query.username;
+   
   }
 
 };

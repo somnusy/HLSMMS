@@ -32,8 +32,8 @@ export default new Router({
     },
 // 配置密码修改路由
     {
-      path: '/useredit',
-      component: () => import(/* webpackChunkName: "UserEdit" */ './views/UserEdit.vue')
+      path: '/pwdedit',
+      component: () => import(/* webpackChunkName: "PwdEdit" */ './views/PwdEdit.vue')
     },
 // 配置分类管理路由
     {
@@ -55,16 +55,50 @@ export default new Router({
       path: '/addgoods',
       component: () => import(/* webpackChunkName: "AddGoods" */ './views/AddGoods.vue')
     },
-// 配置商品商品入库路由
+// 配置添加入库路由
     {
       path: '/stockadd',
       component: () => import(/* webpackChunkName: "StockAdd" */ './views/StockAdd.vue')
     },
-// 配置商品退货路由
+
+// 配置库存管理路由
     {
-      path: '/returngoods',
-      component: () => import(/* webpackChunkName: "returngoods" */ './views/ReturnGoods.vue')
+      path: '/stockmanage',
+      component: () => import(/* webpackChunkName: "StockManage" */ './views/StockManage.vue')
     },
+// 配置销售列表路由
+    {path: '/saleslist',component: () => import(/* webpackChunkName: "SalesList" */ './views/SalesList.vue') },
+    
+    
+    // 配置商品出库路由
+        {path: '/outgoods',component: () => import(/* webpackChunkName: "OutGoods" */ './views/OutGoods.vue') },
+   
+
+// 配置商品退货路由
+    { path: '/returngoods',component: () => import(/* webpackChunkName: "returngoods" */ './views/ReturnGoods.vue')},
+    
+    
+    // 配置销售统计路由
+        { path: '/countsales',component: () => import(/* webpackChunkName: "CountSales" */ './views/CountSales.vue')},
+        
+        // 配置进货统计路由
+            { path: '/countstock',component: () => import(/* webpackChunkName: "CountStock" */ './views/CountStock.vue')},
+            
+            // 配置会员账号管理路由
+                { path: '/vipmember',component: () => import(/* webpackChunkName: "VipMember" */ './views/VipMember.vue')},
+                
+                // 配置添加会员账号路由
+                    { path: '/vipadd',component: () => import(/* webpackChunkName: "VipAdd" */ './views/VipAdd.vue')},
+
+
+
+
+
+
+
+     
+      
+    
 
 
   ]

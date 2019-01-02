@@ -1,12 +1,12 @@
 <template>
       <el-container id="home">
       <!-- 左边菜单栏 -->
-       <Leftmenu></Leftmenu>
+       <Leftmenu :username="username"></Leftmenu>
 
       <!-- 右边部分 -->
       <el-container id="rightContent">
         <!-- 右边头部 -->
-         <Rignttop></Rignttop>
+         <Rignttop :username="username" itemname="欢迎查看更多系统信息"></Rignttop>
         <!-- 右边中心内容 -->
           <el-main>
              <el-card class="box-card">
@@ -90,6 +90,9 @@ import Rightbottom from'../components/rightBottom.vue'
 export default {
   data(){
     return {
+      username:"",
+
+
       tableData:[
         {goodname:"海飞丝去屑洗发水",sale:"20"},
         {goodname:"海飞丝去屑洗发水",sale:"20"},
@@ -110,6 +113,9 @@ export default {
     Rignttop,
     Rightbottom
   },
+  created(){
+    this.username = this.$route.query.username;
+  }
 
 };
 </script>

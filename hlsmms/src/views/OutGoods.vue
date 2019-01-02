@@ -6,15 +6,15 @@
       <!-- 右边部分 -->
       <el-container id="rightContent">
         <!-- 右边头部 -->
-         <Righttop :username="username" itemname="xxxxx"></Righttop>
+         <Righttop :username="username" itemname="商品出库出库"></Righttop>
         <!-- 右边中心内容 -->
           <el-main>
              <el-card class="box-card">
                  <div slot="header" class="clearfix">
-                <h3>模板</h3>
+                <h3>商品出库</h3>
               </div>
               <div class="text item">
-                模板
+                商品出库商品出库商品出库商品出库商品出库商品出库
               </div>
            </el-card>
           </el-main>

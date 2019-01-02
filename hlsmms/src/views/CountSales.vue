@@ -11,10 +11,10 @@
           <el-main>
              <el-card class="box-card">
                  <div slot="header" class="clearfix">
-                <h3>模板</h3>
+                <h3>销售统计</h3>
               </div>
               <div class="text item">
-                模板
+             销售统计销售统计销售统计销售统计销售统计销售统计
               </div>
            </el-card>
           </el-main>
