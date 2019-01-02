@@ -60,22 +60,19 @@
                 {emulateJSON:true,withCredentials:true}
               )
               .then((result)=>{
-                if(result.data=="000000"){
+                if(result.data.isOK){
                   //跳转到管理界面首页并将用户名传入home页面
                   this.$router.push("/home?username="+this.ruleForm2.username)
                 }else{
                   this.$message({
                   type: 'error',
-                  message: `登录失败`
+                  message: result.data.msg
                   });
                 }
               })
               .catch((err)=>{
-                console.log(err)
-                this.$message({
-                  type: 'error',
-                  message: '系统错误'
-                });
+               //登录失败
+                 this.$message.error(result.data.msg);
               })
             } else {
                 this.$message({

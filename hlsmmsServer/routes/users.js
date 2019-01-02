@@ -111,10 +111,11 @@ router.post("/login", (req, res) => {
     } else {
       //如果查询出有和用户输入的名字和密码相等的这条数据
       if (result.length > 0) {
+        //写入cookie
         res.cookie("username", username);
-        res.send("000000")
+        res.send({"isOk":true,"msg":"用户登录成功！"});
       } else {
-        res.send("000001")
+        res.send({"isOk":false,"msg":"用户登录失败！"});
       }
     }
   })
