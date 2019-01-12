@@ -53,31 +53,35 @@
           submitForm(formName) {
             this.$refs[formName].validate((valid) => {
               if (valid) {
+               // 让ajax携带cookie证书
+                 this.axios.defaults.withCredentials=true;
                 //发送ajax向后台请求数据验证
               this.axios.post(
-                "http://127.0.0.1:9090/users/login",
+                "http://172.16.4.164:9090/users/login",
                 this.qs.stringify(this.ruleForm2),
-                {emulateJSON:true,withCredentials:true}
+                //{emulateJSON:true,withCredentials:true}
               )
               .then((result)=>{
-                if(result.data.isOK){
+                if(result.data.isOk){
+                   //登录成功
+                   this.$message({
+                      message:result.data.msg,
+                      type: 'success'
+                   });
                   //跳转到管理界面首页并将用户名传入home页面
                   this.$router.push("/home?username="+this.ruleForm2.username)
                 }else{
-                  this.$message({
-                  type: 'error',
-                  message: result.data.msg
-                  });
+                //登录失败
+                 this.$message.error(result.data.msg);
                 }
               })
               .catch((err)=>{
-               //登录失败
-                 this.$message.error(result.data.msg);
+               this.$message.error(err.message);
               })
             } else {
                 this.$message({
                   type: 'info',
-                  message: `登录失败`
+                  message: `系统错误`
                 });
                 return false;
               }
@@ -87,8 +91,8 @@
             this.$refs[formName].resetFields();
           }
         },
-        created() {
-          // 进入登陆页面清除cookie
+      /*  created() {
+           // 进入登陆页面清除cookie
           this.axios.post(
                 "http://127.0.0.1:9090/users/delcookie",
                 JSON.stringify({path:"delcookie"}),
@@ -103,8 +107,8 @@
                   type: 'error',
                   message: '系统错误'
                 });
-              })
-        },
+              }) 
+        },*/
     };
   </script>
 

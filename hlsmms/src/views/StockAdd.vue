@@ -14,7 +14,7 @@
             <h3>商品入库</h3>
           </div>
           <div class="text item">
-            <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" label-position="top">
+            <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" label-position="top" size="small">
               <!-- 输入商品条形码 -->
               <el-form-item label="商品条形码 :" prop="barcode">
                 <el-input type="text" v-model="ruleForm2.barcode" autocomplete="off"></el-input>

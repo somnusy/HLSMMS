@@ -23,18 +23,9 @@ connect.connect((err) => {
 
 router.all("*", (req, res, next) => {
   // res.header("Access-Control-Allow-Origin","*"); //携带cookie证书时，跨域不能使用通配符*
-  res.header("Access-Control-Allow-Origin", "http://127.0.0.1:8080"); //允许携带cookie证书的域名
+  res.header("Access-Control-Allow-Origin", "http://172.16.4.164:8080"); //允许携带cookie证书的域名
   res.header("Access-Control-Allow-Credentials", true);  //值是一个布尔值，表示是否允许发送Cookie
-  if (req.body.path) {
     next();
-  } else {
-    //验证cookie
-    if (req.cookies.username) {
-      next(); //放行执行下面的路由
-    } else {
-      res.send("123");
-    }
-  }
 });
 
 
@@ -112,6 +103,7 @@ router.post("/login", (req, res) => {
       //如果查询出有和用户输入的名字和密码相等的这条数据
       if (result.length > 0) {
         //写入cookie
+         res.cookie("userid",result[0].userid)
         res.cookie("username", username);
         res.send({"isOk":true,"msg":"用户登录成功！"});
       } else {
@@ -121,6 +113,28 @@ router.post("/login", (req, res) => {
   })
 })
 
+
+//验证cookie是否存在
+router.get("/getCookie",(req,res)=>{
+  let userid=req.cookies.userid;
+  let username=req.cookies.username;
+  //如果存在就有cookie就合法
+  if(userid && username){
+      res.send({"isOk":true});
+  }
+  else{
+      res.send({"isOk":false});
+  }
+});
+
+
+
+//清除cookie的路由
+router.get("/loginOut",(req,res)=>{
+  res.clearCookie("userid");
+  res.clearCookie("username");
+  res.send({"isOk":true});
+});
 
 
 //接收修改密码页面发送的post请求
@@ -315,20 +329,111 @@ router.post("/updateClassify", (req, res) => {
 
 
 //添加商品的请求
-//修改类型管理
-router.post("/addgoods", (req, res) => {
+ router.post("/addgoods", (req, res) => {
+  //接收数据
+  let {classname,barcode,goodsname,saleprice,marketprice,costprice,stocknum,weight,unit,isdiscount,ispromotion,details}=req.body;
+  //构造sql语句
+  let sqlStr="insert into goodsinfo(classname,barcode,goodsname,saleprice,marketprice,costprice,stocknum,weight,unit,isdiscount,ispromotion,details) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+  let sqlParams=[classname,barcode,goodsname,saleprice,marketprice,costprice,stocknum,weight,unit,isdiscount,ispromotion,details];
+  connect.query(sqlStr,sqlParams,(err,result)=>{
+      if(err){
+          throw err;
+      }
+      else{
+          if(result.affectedRows>0){
+              res.json({"isOk":true,"msg":"商品添加成功!"});
+          }
+          else{
+              res.json({"isOk":false,"msg":"商品添加失败!"});
+          }
+      }
+  })
+})
+
+
+
+//获取商品列表的路由
+router.get("/getgoods",(req,res)=>{
+  //接收 商品分类和关键词
+    let {classname,keywords}=req.query;
+    //构造sql语句,查询全部
+    let sqlStr="select * from goodsinfo where 1=1"; //where 1=1永远成立，全表查询
+  //判断 商品分类和关键词 是否是有效的值，商品分类有值就执行拼接,然后在拼接sql语句
+    if(classname){
+        sqlStr+=` and classname='${classname}'`; //字符串加引号
+    }
+    //关键词有值就执行拼接
+    if(keywords){
+        sqlStr+=` and (goodsname like '%${keywords}%' or barcode like '%${keywords}%')`; //商品名和条码二选一
+    }
+    //拼接排序的语句
+    sqlStr+=" order by goodsid DESC";
+
+    //执行查询获取总的满足条件的记录数
+    let total=0;
+    connect.query(sqlStr,(err,goodsTotal)=>{
+        if(err){
+            throw err;
+        }
+        else{
+            total=goodsTotal.length;
+        }
+    });
+    //接收分页参数
+    let {pagesize,currentpage}=req.query;
+    console.log('pagesize',pagesize,'currentpage',currentpage);
+
+    //拼接分页的sql语句
+    if(pagesize && currentpage){
+        let skip=(currentpage-1)*pagesize;
+        sqlStr+=` limit ${skip},${pagesize}`;
+    }
+
+    //执行sql查询,并把结果返回前端
+    connect.query(sqlStr,(err,goodsArray)=>{
+        if(err){
+            throw err;
+        }
+        else{
+            res.send({"total":total,"goodsArray":goodsArray}); //如果没有数据就是空数组，有数据就是数组对象
+        }
+  });
+});
+
+
+//删除商品列表的路由
+router.get("/delgoods",(req,res)=>{
+  //接收 商品分类和关键词
+    let {id}=req.query;
+    //构造sql语句,查询全部
+    let sqlStr="delete from goodsinfo where goodsid="+id;
+    connect.query(sqlStr,(err,goodsTotal)=>{
+        if(err){
+            throw err;
+        }
+        else{
+          res.send({"isOk":true,"message":"删除成功"});
+        }
+    });
+});
+
+
+// 接收前端保存修改商品信息的请求
+router.post("/editGoods", (req, res) => {
+  //接收修改后的新数据
+  let {goodsid,classname,barcode,goodsname,saleprice,marketprice,costprice,stocknum,weight,unit,isdiscount,ispromotion,details}=req.body;
   //创建sql语句
-  let sqlStr = "insert into goodsinfo()value()"
-  
+  let sqlStr="update goodsinfo set classname=?,barcode=?,goodsname=?,saleprice=?,marketprice=?,costprice=?,stocknum=?,weight=?,unit=?,isdiscount=?,ispromotion=?,details=? where goodsid=?";
+  let sqlParams=[classname,barcode,goodsname,saleprice,marketprice,costprice,stocknum,weight,unit,isdiscount,ispromotion,details,goodsid];
   //执行sql语句
-  connect.query(sqlStr, sqlParmas, (err, result) => {
+  connect.query(sqlStr, sqlParams, (err, result) => {
     if (err) {
       throw err;
     } else {
       if (result.affectedRows > 0) {
-        res.json({ "isOk": true, "code": 1, "msg": "类型修改成功" })
+        res.json({ "isOk": true, "msg": "商品修改成功" })
       } else {
-        res.json({ "isOk": false, "code": -1, "msg": "类型修改失败" })
+        res.json({ "isOk": false, "msg": "商品修改失败" })
       }
     }
   })

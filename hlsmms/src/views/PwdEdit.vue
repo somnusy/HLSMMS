@@ -99,7 +99,7 @@ export default {
           if (valid) { 
             //发起ajax请求去后端做数据库的验证
             this.axios.post(
-              "http://127.0.0.1:9090/users/pwdedit",
+              "http://172.16.4.164:9090/users/pwdedit",
               this.qs.stringify(this.ruleForm2),
               {emulateJSON:true,withCredentials:true}
             )

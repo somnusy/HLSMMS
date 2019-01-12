@@ -14,7 +14,7 @@
             <h3>添加管理</h3>
           </div>
           <div class="text item">
-            <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" label-position="top">
+            <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm" label-position="top"  size="small">
               <el-form-item label="所属分类 :" prop="addclassify">
                 <el-select v-model="ruleForm2.addclassify" placeholder="请选择">
                   <el-option label="零食" value="ls"></el-option>
@@ -79,7 +79,7 @@ export default {
         if (valid) {
           this.axios
             .post(
-              "http://127.0.0.1:9090/users/addClassify",
+              "http://172.16.4.164:9090/users/addClassify",
               this.qs.stringify(this.ruleForm2),
               {emulateJSON:true,withCredentials:true}
             )

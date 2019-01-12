@@ -5,7 +5,7 @@
               <p><span>您好  </span><span>{{username}}</span></p>
               <p>
                 <router-link to="/home">管理首页</router-link>  | 
-                <router-link to="/">退出系统</router-link>  
+                <a href="javascript:void(0)" @click="loginOut()">退出系统</a>
               </p>
             </div>
            <el-menu
@@ -159,13 +159,25 @@ export default {
 // 左侧展开和收起的方法
   methods: {
     handleOpen(key, keyPath) {
-      // console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
-      //console.log(key, keyPath);
-    }
+    },
+    loginOut(){
+      //发起ajax到后端路由去执行清除cookie的操作
+      this.axios.get("http://127.0.0.1:9090/users/loginOut").then(result=>{
+        //根据是否清除成功处理业务逻辑
+        if(result.data.isOk){
+          this.$message({
+            message: '退出成功！',
+            type: 'success'
+          });
+          this.$router.push("/login");
+        }
+      }).catch(err=>{
+        console.log(err);
+      })
+    },
   },
-
   // 接受父组件的值
     props: {
       username: String,

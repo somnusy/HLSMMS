@@ -114,7 +114,7 @@ export default {
         if (valid) {
           this.axios
             .post(
-              "http://127.0.0.1:9090/users/updateClassify",
+              "http://172.16.4.164:9090/users/updateClassify",
               this.qs.stringify(this.ruleForm2),
               {emulateJSON:true,withCredentials:true}
             )
@@ -154,7 +154,7 @@ export default {
 
     this.axios
       .post(
-        "http://127.0.0.1:9090/users/initClassify",
+        "http://172.16.4.164:9090/users/initClassify",
         this.qs.stringify(this.ruleForm2),
         {emulateJSON:true,withCredentials:true}
       )
@@ -172,7 +172,7 @@ export default {
 
       this.axios
       .post(
-        "http://127.0.0.1:9090/users/initAllClassify",
+        "http://172.16.4.164:9090/users/initAllClassify",
         this.qs.stringify(this.ruleForm2),
         {emulateJSON:true,withCredentials:true}
       )

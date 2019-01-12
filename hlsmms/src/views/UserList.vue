@@ -73,10 +73,6 @@
             <el-option label="普通管理员" value="普通管理员"></el-option>
           </el-select>
         </el-form-item>
-       <!--     <el-form-item>
-                <el-button type="success" @click="submitForm('ruleForm2')">添加</el-button>
-                <el-button @click="resetForm('ruleForm2')">重置</el-button>
-              </el-form-item> -->
         </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
@@ -114,7 +110,7 @@ export default {
           //required: true 必填     trigger: 'blur' 失去焦点的事件触发     message: "出错信息"
           { required: true, trigger: "blur", message: "用户名必须填写" },
           //min: 6 最小长度   max: 18 最大长度
-          {min: 6,max: 18,message: "用户名长度在 6 到 18 个字符",trigger: "blur"}
+          {min: 1,max: 18,message: "用户名长度在 1 到 18 个字符",trigger: "blur"}
             ],
          userpwd: [
           { required: true, trigger: "blur", message: "密码必须填写" },
@@ -140,15 +136,10 @@ export default {
         if (valid) {
           this.axios
             .post(
-              "http://127.0.0.1:9090/users/savenewdata",
+              "http://172.16.4.164:9090/users/savenewdata",
               this.qs.stringify(this.ruleForm2),
-              {emulateJSON:true,withCredentials:true}
             )
             .then(result => {
-              if(result.data=="123"){
-                this.$router.push("/")
-              }
-
               if (result.data.isOk) {
                 this.$message({
                   showClose: true,
@@ -177,7 +168,7 @@ export default {
     //请求数据的方法
     getuser() {
       this.axios
-        .get("http://127.0.0.1:9090/users/userlist",{emulateJSON:true,withCredentials:true})
+        .get("http://172.16.4.164:9090/users/userlist",{emulateJSON:true,withCredentials:true})
         .then(result => {
           if(result.data=="123"){
             this.$router.push("/")
@@ -192,7 +183,7 @@ export default {
    //编辑的方法
     handleEdit(userid) {
    //点击时发送ajax请求且弹出模态框
-   this.axios.get("http://127.0.0.1:9090/users/getusermsg?userid="+userid,{emulateJSON:true,withCredentials:true})
+   this.axios.get("http://172.16.4.164:9090/users/getusermsg?userid="+userid,{emulateJSON:true,withCredentials:true})
    .then(olddata=>{
      if(olddata.data=="123"){
         this.$router.push("/")
@@ -209,7 +200,7 @@ export default {
     handleDelete(userid) {
       //发送删除用户的请求
       this.axios
-        .get("http://127.0.0.1:9090/users/deluser?userid=" + userid,{emulateJSON:true,withCredentials:true})
+        .get("http://172.16.4.164:9090/users/deluser?userid=" + userid,{emulateJSON:true,withCredentials:true})
         .then(result => {
           if (result.data.isOk) {
             //再发送ajax请求将更新后的用户数据渲染到表格

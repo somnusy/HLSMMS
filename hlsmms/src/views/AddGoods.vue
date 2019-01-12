@@ -23,6 +23,9 @@
                 <el-select v-model="ruleForm2.classname" placeholder="请选择">
                   <el-option label="日用品" value="日用品"></el-option>
                   <el-option label="食品" value="食品"></el-option>
+                  <el-option label="服装" value="食品"></el-option>
+                  <el-option label="酒水" value="食品"></el-option>
+                 
                 </el-select>
               </el-form-item>
               <!-- 商品条形码 -->
@@ -107,18 +110,15 @@ import Rightbottom from "../components/rightBottom.vue";
 export default {
   data() {
     return {
-      // radio1: "1",
-      // radio2: "1",
-
       ruleForm2: {
         classname: "",
-        //  classifyname: "",
         barcode: "",
         goodsname: "",
         saleprice: "",
         marketprice: "",
         costprice: "",
         stocknum: "",
+        weight:"",
         unit: "",
         details: "",
         isdiscount: "1",
@@ -153,17 +153,22 @@ export default {
         this.$refs[formName].validate((valid) => {
           if (valid) {
            //发送ajax请求保存商品数据
-           this.axios.get(
-             'http://127.0.0.1:9090/users/addgoods',
+           this.axios.post(
+             'http://172.16.4.164:9090/users/addgoods',
              this.qs.stringify(this.ruleForm2),
-              //允许携带cookie
-              {emulateJSON:true,withCredentials:true}
-           ).then(result)
-          } else {
-            return false;
+           ).then(result=>{
+               if (result.data.isOk) {
+                this.$message({
+                  message:result.data.msg,
+                  type: "success"
+                });
+              } else {
+               this.$message.error(result.data.msg);
           }
         });
-      },
+      }else{
+          return false;
+      }})},
     //定义方法  市场价是商品售价的1.2倍 售价是进价的5倍
     calcJG() {
       let v = this;
